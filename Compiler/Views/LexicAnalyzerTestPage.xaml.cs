@@ -17,10 +17,19 @@ namespace Compiler.Views
             ViewModel = new LexicAnalyzerTestViewModel();
             DataContext = ViewModel;
         }
-        private void analyze_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e) => ViewModel?.Analyze();
+        private void analyze_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            string Text = null;
+            code.Document.GetText(Windows.UI.Text.TextGetOptions.None, out Text);
+            ViewModel?.Analyze(Text);
+        }
 
         private void exit_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e) => ViewModel?.Exit();
 
-        private void clean_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e) => ViewModel?.Clean();
+        private void clean_Click(object sender, Windows.UI.Xaml.RoutedEventArgs e)
+        {
+            code.Document.SetText(Windows.UI.Text.TextSetOptions.None, string.Empty);
+            ViewModel?.Clean();
+        }
     }
 }

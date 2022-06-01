@@ -9,24 +9,17 @@ namespace Compiler.ViewModels
         readonly LexiconAnalyzer LexiconAnalyzer = new LexiconAnalyzer();
         
         ObservableCollection<Lexicon> lexicons = new ObservableCollection<Lexicon>();
-        string text = string.Empty;
         public ObservableCollection<Lexicon> Lexicons
         {
             get => lexicons;
             set => SetProperty(ref lexicons, value);
         }
-        public string Text
-        {
-            get => text;
-            set => SetProperty(ref text, value);
-        }
-
         public LexicAnalyzerTestViewModel()
         {
             Title = "Prueba de analizador lexico";
         }
 
-        public void Analyze()
+        public void Analyze(string Text)
         {
             Lexicons.Clear();
             var lex = LexiconAnalyzer.Analyze(Text);
@@ -37,7 +30,6 @@ namespace Compiler.ViewModels
         }
         public void Clean()
         {
-            Text = string.Empty;
             Lexicons.Clear();
         }
         public void Exit()
