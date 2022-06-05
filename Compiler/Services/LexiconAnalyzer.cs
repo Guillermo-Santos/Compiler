@@ -6,9 +6,18 @@ using System.Threading.Tasks;
 
 namespace Compiler.Services
 {
-    internal class LexiconAnalyzer : ILexiconAnalyzer
+    internal class LexiconAnalyzer : ILexiconAnalyzer<Automaton, IEnumerable<Lexicon>>
     {
-        readonly Automaton Automaton = new Automaton();
+        Automaton _automaton { get; set; }
+        public Automaton Automaton { 
+            get => _automaton; 
+            set => _automaton = value; 
+        }
+
+        public LexiconAnalyzer()
+        {
+            Automaton = new Automaton();
+        }
         public IEnumerable<Lexicon> Analyze(string text)
         {
             List<Lexicon> tokens = new List<Lexicon>();
