@@ -25,10 +25,10 @@
                          PlaceholderText="Inserta tu codigo"
                          TextWrapping="NoWrap"
             />
-            <controls:DataGrid Grid.Column="1" ItemsSource="{Binding Lexicons}"/>
+            <controls:DataGrid Grid.Column="1" ItemsSource="{Binding Lexicons}" IsReadOnly="True"/>
 
         </Grid>
-        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10">
+        <StackPanel Grid.Row="1" Orientation="Horizontal" HorizontalAlignment="Center" Margin="10" Spacing="20">
             <Button x:Name="analyze" Content="Analisis Lexico" Click="analyze_Click"/>
             <AppBarSeparator/>
             <Button x:Name="exit" Content="Salir" Click="exit_Click"/>

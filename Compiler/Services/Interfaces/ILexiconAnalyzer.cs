@@ -15,7 +15,7 @@ namespace Compiler.Services.Interfaces
         /// </returns>
         IEnumerable<Lexicon> Analyze(string text);
         /// <summary>
-        /// Metodo que identifica un lexema <paramref name="Lexeme"/> 
+        /// Metodo que identifica un lexeme <paramref name="Lexeme"/> 
         /// dentro de las palabra reservadas del lenguaje.
         /// </summary>
         /// <param name="Lexeme">Lexema a identificar</param>
