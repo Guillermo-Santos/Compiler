@@ -15,7 +15,7 @@ namespace Compiler.Services
         Number,//Estado que representa un numero, ya sea un numero entero o un numero real.
         String,//Estado que representa una cadena de texto.
         Symbol,//Estado que representa un simbolo aceptado por el lenguaje,
-        Delim,//Delimitadores de tokens, casos como un espacio, final de linea, tabulaciones, etc.
+        Delim,//Delimitadores de tokens, casos como un espacio, final de linea, tabulaciones, etc. que seran ignorados.
         NotAcepted,//Estado que representa, de manera general, todo caracter no aceptado por el lenguaje. 
     }
     /// <summary>
@@ -35,37 +35,52 @@ namespace Compiler.Services
 
     internal class Automaton : IAutomaton<IEnumerable<Lexeme>,State>
     {
-        State[] Arrange(State[] states, State first)
+        /// <summary>
+        /// Cambia de posicion el elemento <paramref name="item"/> con el elemento de la posicion <paramref name="pos"/> en <paramref name="items"/>.
+        /// </summary>
+        /// <param name="items">Array de elementos.</param>
+        /// <param name="item">Item a cambiar de posicion.</param>
+        /// <param name="pos">Posicion destino.</param>
+        /// <returns>
+        ///     <paramref name="items"/> ordenado.
+        /// </returns>
+        State[] Swap(State[] items, State item, int pos)
         {
-            for(int i = 2; i<states.Length; i++)
+            for(int i = 2; i<items.Length; i++)
             {
-                if(states[i] == first)
+                //Si el estado i = igual al estado que tiene que estar primero, entonces lo colocamos de primero.
+                if(items[i] == item)
                 {
-                    states[i] = states[2];
-                    states[2] = first;
+                    items[i] = items[pos];
+                    items[pos] = item;
                     break;
                 }
             }
-            return states;
+            return items;
         }
         public State Evaluate(string lexeme, State LastState)
         {
+            //Orden estandar de evaluaciones de estado. Posiciones cambiables(2,3,4,...,n)
             State[] order = { 
                 State.String,
-                State.NotAcepted, 
-                State.Word, 
-                State.Number, 
+                State.NotAcepted,
+                State.Number,
+                State.Word,
                 State.Symbol
             };
-            if(LastState != State.Default && LastState != State.NotAcepted && LastState != order[2] && LastState != State.String) {
-                order = Arrange(order, LastState); 
+            //Si el ultimo estado no es el default(inicializador) ni tampoco es las posiciones no cambiables
+            //ni tampoco la primera posicion cambiable, entonces reordenamos.
+            if (LastState != State.Default && LastState != order[0] && LastState != order[1] && LastState != order[2])
+            {
+                order = Swap(order, LastState, 2);
             }
-            foreach(State state in order)
+            //Visitamos cada estado en el orden establecido, si el lexema es igual al estado que se esta evaluando, entonces devuelve ese estado.
+            foreach (State state in order)
             {
                 switch (state)
                 {
                     case State.NotAcepted:
-                        if (Regex.IsMatch(lexeme, @"[\s\n\v\b\t\rŸ]"))
+                        if (Regex.IsMatch(lexeme, @"[\s\n\c\b\t\r]"))
                         {
                             return state;
                         }
@@ -83,13 +98,13 @@ namespace Compiler.Services
                         }
                         break;
                     case State.String:
-                        if (Regex.IsMatch(lexeme, "\"[^\"]*\"|\"[^\"]*[\"]*"))
+                        if (Regex.IsMatch(lexeme, "\"[^\"]*\"|\"[^\"]*"))
                         {
                             return state;
                         }
                         break;
                     case State.Symbol:
-                        if (Regex.IsMatch(lexeme, @"[!<>;,\.+\-*/()=]"))
+                        if (Regex.IsMatch(lexeme, @"[!<>,\.;+\-*/()=]"))
                         {
                             return state;
                         }
@@ -109,38 +124,43 @@ namespace Compiler.Services
             //Preparando el ultimo estado para la primera iteracion
             State LastState = State.Default;
             for (int L = 0;L< lines.Length; L++){
-                //Agregamos un caracter no implementado a la linea con la que vayamos a trabajar.
-                lines[L] += "Ÿ";
                 for (int C = 0; C < lines[L].Length; C++)
                 {
-                    State NewState = Evaluate(NewLexicon.Text + lines[L][C], LastState);
+                    //Sacamos el caracter a evaluar de la linea.
+                    char c = lines[L][C];
+                    //Evaluamos al caracter junto al lexema actual.
+                    State NewState = Evaluate(NewLexicon.Text + c, LastState);
+                    //Constrains propios de del nuevo estado
                     switch (NewState)
                     {
                         case State.Word:
                             {
-                                if (Regex.IsMatch(lines[L][C].ToString(), @"[a-zA-Z_][a-zA-z0-9_]*"))
+                                if (Regex.IsMatch(c.ToString(), @"[a-zA-Z0-9_]") && LastState == NewState)
                                 {
                                     //Agregamos el caracter actual al nuevo lexema.
-                                    NewLexicon.Text += lines[L][C];
+                                    NewLexicon.Text += c;
                                 }
                                 else
                                 {
-                                    //Le colocamos al tipo de estado al que pertenece el lexema.
-                                    NewLexicon.State = LastState;
-                                    //Agregamos el nuevo lexema a la lista de lexemas.
-                                    Lexicons.Add(NewLexicon);
-                                    //Inicializamos el nuevo lexema con el caracter actual.
-                                    NewLexicon = new Lexeme() { Text = string.Empty };
+                                    if(LastState != State.Default && LastState != State.NotAcepted && NewLexicon.Text.Length > 0)
+                                    {
+                                        //Le colocamos al tipo de estado al que pertenece el lexema.
+                                        NewLexicon.State = LastState;
+                                        //Agregamos el nuevo lexema a la lista de lexemas.
+                                        Lexicons.Add(NewLexicon);
+                                        //Inicializamos el nuevo lexema con el caracter actual.
+                                        NewLexicon = new Lexeme() { Text = string.Empty };
+                                    }
                                     C--;
                                 }
                                 break;
                             }
                         case State.Number:
                             {
-                                if (Regex.IsMatch(lines[L][C].ToString(), @"[0-9.]"))
+                                if (Regex.IsMatch(c.ToString(), @"[0-9.]") && Regex.IsMatch(NewLexicon.Text + c, @"[0-9]+\.{0,1}[0-9]*"))
                                 {
                                     //Agregamos el caracter actual al nuevo lexema.
-                                    NewLexicon.Text += lines[L][C];
+                                    NewLexicon.Text += c;
                                 }
                                 else
                                 {
@@ -169,7 +189,8 @@ namespace Compiler.Services
                                 }
                                 else
                                 {
-                                    if (LastState == State.Symbol)
+
+                                    if (LastState == State.Symbol && Regex.IsMatch(NewLexicon.Text+c, "\"[^\"]*"))
                                     {
                                         if (NewLexicon.Text.Length > 0)
                                         {
@@ -179,32 +200,35 @@ namespace Compiler.Services
                                             //Agregamos el nuevo lexema a la lista de lexemas.
                                             Lexicons.Add(NewLexicon);
                                             //Inicializamos el nuevo lexema con el caracter actual.
-                                            NewLexicon = new Lexeme() { Text = string.Empty };
+                                            NewLexicon = new Lexeme() { Text = c.ToString() };
                                         }
                                     }
-                                    //Agregamos el caracter actual al nuevo lexema.
-                                    NewLexicon.Text += lines[L][C];
+                                    else
+                                    {
+                                        //Agregamos el caracter actual al nuevo lexema.
+                                        NewLexicon.Text += c;
+                                    }
                                 }
                                 break;
                             }
                         case State.Symbol:
                             {
-                                if (Regex.IsMatch(lines[L][C].ToString(), @"[!<>;,\.+\-*/()=]"))
+                                if (Regex.IsMatch(c.ToString(), @"[!<>;,\.;+\-*/()=]"))
                                 {
                                     //Si el simbolo sin el nuevo caracter ya es un simbolo compuesto y el simbolo + el nuevo caracter tipo simbolo no es un simbolo compuesto.
-                                    if (Regex.IsMatch(NewLexicon.Text, @"\+\+|--|<=|>=|\+=|-=|!=|==") && !Regex.IsMatch(NewLexicon.Text + lines[L][C], @"\+\+|--|<=|>=|\+=|-=|!=|=="))
+                                    if (Regex.IsMatch(NewLexicon.Text, @"\+\+|--|<=|>=|\+=|-=|!=|==") )
                                     {
                                         //Le colocamos al tipo de estado al que pertenece el lexema.
                                         NewLexicon.State = LastState;
                                         //Agregamos el nuevo lexema a la lista de lexemas.
                                         Lexicons.Add(NewLexicon);
                                         //Inicializamos el nuevo lexema con el caracter actual.
-                                        NewLexicon = new Lexeme() { Text = string.Empty + lines[L][C] };
+                                        NewLexicon = new Lexeme() { Text = string.Empty + c };
                                     }
                                     else
                                     {
                                         //Agregamos el caracter actual al nuevo lexema.
-                                        NewLexicon.Text += lines[L][C];
+                                        NewLexicon.Text += c;
                                     }
                                 }
                                 else
@@ -222,11 +246,19 @@ namespace Compiler.Services
                             }
                         case State.NotAcepted:
                             {
-                                if (LastState != NewState)
-                                {
-                                    if (NewLexicon.Text.Length > 0)
-                                    {
+                                /*
+                                 * MANEJAR ERRRORES
+                                 * IGNORABLES
+                                 * Terminador de lineas
+                                 */
 
+                                //Si el ultimo estado no es igual al estado actual(estado de "no aceptado")
+                                //O el caracter actual no es aceptado
+                                if (LastState != NewState || Regex.IsMatch(c.ToString(), @"[\s\n\c\b\t\r]"))
+                                {
+                                    //si el lexema tiene algun caracter, entonces agregamos el lexema.
+                                    if (NewLexicon.Text.Length > 0)
+                                    { 
                                         //Le colocamos al tipo de estado al que pertenece el lexema.
                                         NewLexicon.State = LastState;
                                         //Agregamos el nuevo lexema a la lista de lexemas.
@@ -237,6 +269,16 @@ namespace Compiler.Services
                                 }
                                 break;
                             }
+                    }
+                    //Asegurador para lexema final.
+                    if (C == lines[L].Length - 1 && NewLexicon.Text.Length > 0)
+                    {
+                        //Le colocamos al tipo de estado al que pertenece el lexema.
+                        NewLexicon.State = NewState;
+                        //Agregamos el nuevo lexema a la lista de lexemas.
+                        Lexicons.Add(NewLexicon);
+                        //Inicializamos el nuevo lexema con el caracter actual.
+                        NewLexicon = new Lexeme() { Text = string.Empty };
                     }
                     LastState = NewState;
                 }

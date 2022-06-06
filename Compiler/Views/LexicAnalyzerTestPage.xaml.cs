@@ -1,4 +1,5 @@
 ﻿using Compiler.ViewModels;
+using Windows.System;
 using Windows.UI.Xaml.Controls;
 
 // The Blank Page item template is documented at https://go.microsoft.com/fwlink/?LinkId=234238
@@ -30,6 +31,19 @@ namespace Compiler.Views
         {
             code.Document.SetText(Windows.UI.Text.TextSetOptions.None, string.Empty);
             ViewModel?.Clean();
+        }
+
+        private void code_KeyDown(object sender, Windows.UI.Xaml.Input.KeyRoutedEventArgs e)
+        {
+            if (e.Key == VirtualKey.Tab)
+            {
+                RichEditBox richEditBox = sender as RichEditBox;
+                if (richEditBox != null)
+                {
+                    richEditBox.Document.Selection.TypeText("\t");
+                    e.Handled = true;
+                }
+            }
         }
     }
 }

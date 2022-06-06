@@ -24,6 +24,7 @@
                          Header="Codigo a analizar" 
                          PlaceholderText="Inserta tu codigo"
                          TextWrapping="NoWrap"
+                         KeyDown="code_KeyDown"
             />
             <controls:DataGrid Grid.Column="1" ItemsSource="{Binding Lexicons}" IsReadOnly="True"/>
 
