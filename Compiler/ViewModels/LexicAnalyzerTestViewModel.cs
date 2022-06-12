@@ -1,5 +1,5 @@
-﻿using Compiler.Services;
-using Compiler.Models;
+﻿using Compiler.Models;
+using Compiler.Services.Analyzers.Lexic;
 using System.Collections.ObjectModel;
 
 namespace Compiler.ViewModels
@@ -7,7 +7,7 @@ namespace Compiler.ViewModels
     internal class LexicAnalyzerTestViewModel : BaseViewModel
     {
         readonly LexiconAnalyzer LexiconAnalyzer = new LexiconAnalyzer();
-        
+
         ObservableCollection<Lexicon> lexicons = new ObservableCollection<Lexicon>();
         public ObservableCollection<Lexicon> Lexicons
         {

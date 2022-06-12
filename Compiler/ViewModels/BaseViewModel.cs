@@ -1,6 +1,4 @@
-﻿using Compiler.Models;
-using Compiler.Services;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
@@ -66,7 +64,7 @@ namespace Compiler.ViewModels
 
             changed.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
-        
+
         #endregion
     }
 }

@@ -119,15 +119,24 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="AppData.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Models\Lexeme.cs" />
     <Compile Include="Models\Lexicon.cs" />
+    <Compile Include="Models\Sentence.cs" />
+    <Compile Include="Models\State.cs" />
+    <Compile Include="Models\Token.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\Automaton.cs" />
+    <Compile Include="Services\Analyzers\Lexic\LexiconAnalyzer.EM.cs" />
+    <Compile Include="Services\Analyzers\Sintax\Automaton.cs" />
+    <Compile Include="Services\Analyzers\Sintax\SintaxAnalyzer.cs" />
+    <Compile Include="Services\Analyzers\Lexic\Automaton.cs" />
+    <Compile Include="Services\Error Manager\ErrorManager.cs" />
     <Compile Include="Services\Interfaces\IAutomaton.cs" />
-    <Compile Include="Services\Interfaces\ILexiconAnalyzer.cs" />
-    <Compile Include="Services\LexiconAnalyzer.cs" />
+    <Compile Include="Services\Interfaces\IAnalyzer.cs" />
+    <Compile Include="Services\Analyzers\Lexic\LexiconAnalyzer.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\LexicAnalyzerTestViewModel.cs" />
     <Compile Include="Views\LexicAnalyzerTestPage.xaml.cs">
@@ -171,7 +180,9 @@
       <Version>7.1.2</Version>
     </PackageReference>
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <Folder Include="Services\Analyzers\Semantic\" />
+  </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>
   </PropertyGroup>

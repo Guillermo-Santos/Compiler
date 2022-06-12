@@ -5,7 +5,7 @@
     /// </summary>
     /// <typeparam name="T1">Tipo que devuelve la funcion de reconocimiento.</typeparam>
     /// <typeparam name="T2">Tipo que devuelve la funcion de evaluacion.</typeparam>
-    internal interface IAutomaton<T1,T2>
+    internal interface IAutomaton<T1, T2>
     {
         /// <summary>
         /// Metodo utilizado para reconocer una cadena de texto.
