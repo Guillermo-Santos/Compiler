@@ -9,6 +9,12 @@
     Background="{ThemeResource ApplicationPageBackgroundThemeBrush}">
 
     <Grid>
-
+        <NavigationView>
+            <NavigationView.MenuItems>
+                <NavigationViewItem x:Name="LexicTest" Icon="ShowResults" Content="Prueba lexica" Tag="LexicAnalyzerTestPage" Tapped="LexicTest_Tapped"/>
+                <NavigationViewItem x:Name="SyncTest" Icon="Document" Content="Prueba sintactica" Tag="SyntacticAnalyzerTestPage" Tapped="SyncTest_Tapped"/>
+            </NavigationView.MenuItems>
+            <Frame x:Name="Visual"/>
+        </NavigationView>
     </Grid>
 </Page>

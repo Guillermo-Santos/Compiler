@@ -35,6 +35,6 @@
             <Button x:Name="exit" Content="Salir" Click="exit_Click"/>
             <AppBarSeparator/>
             <Button x:Name="clean" Content="Limpiar tabla" Click="clean_Click"/>
-        </StackPanel>
+        </StackPanel>   
     </Grid>
 </Page>

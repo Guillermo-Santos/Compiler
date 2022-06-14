@@ -119,28 +119,20 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
-    <Compile Include="AppData.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
-    <Compile Include="Models\Lexeme.cs" />
-    <Compile Include="Models\Lexicon.cs" />
-    <Compile Include="Models\Sentence.cs" />
-    <Compile Include="Models\State.cs" />
-    <Compile Include="Models\Token.cs" />
+    <Compile Include="Models\Templates\SyntaxTemplate.cs" />
+    <Compile Include="Models\Templates\SyntaxTemplateSelector.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Services\Analyzers\Lexic\LexiconAnalyzer.EM.cs" />
-    <Compile Include="Services\Analyzers\Sintax\Automaton.cs" />
-    <Compile Include="Services\Analyzers\Sintax\SintaxAnalyzer.cs" />
-    <Compile Include="Services\Analyzers\Lexic\Automaton.cs" />
-    <Compile Include="Services\Error Manager\ErrorManager.cs" />
-    <Compile Include="Services\Interfaces\IAutomaton.cs" />
-    <Compile Include="Services\Interfaces\IAnalyzer.cs" />
-    <Compile Include="Services\Analyzers\Lexic\LexiconAnalyzer.cs" />
     <Compile Include="ViewModels\BaseViewModel.cs" />
     <Compile Include="ViewModels\LexicAnalyzerTestViewModel.cs" />
+    <Compile Include="ViewModels\SyntaxAnalyzerTestViewModel.cs" />
     <Compile Include="Views\LexicAnalyzerTestPage.xaml.cs">
       <DependentUpon>LexicAnalyzerTestPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SyntactiAnalyzerTestPage.xaml.cs">
+      <DependentUpon>SyntactiAnalyzerTestPage.xaml</DependentUpon>
     </Compile>
   </ItemGroup>
   <ItemGroup>
@@ -171,6 +163,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\SyntactiAnalyzerTestPage.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
   </ItemGroup>
   <ItemGroup>
     <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
@@ -181,7 +177,13 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="Services\Analyzers\Semantic\" />
+    <Folder Include="Services\" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Compiler.Core\Compiler.Core.csproj">
+      <Project>{23e21248-213b-49c5-bb6f-1c299f3d4162}</Project>
+      <Name>Compiler.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
     <VisualStudioVersion>14.0</VisualStudioVersion>

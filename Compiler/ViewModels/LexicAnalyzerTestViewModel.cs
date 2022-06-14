@@ -1,5 +1,5 @@
-﻿using Compiler.Models;
-using Compiler.Services.Analyzers.Lexic;
+﻿using Compiler.Core.Models;
+using Compiler.Core.Services.Analyzers.Lexic;
 using System.Collections.ObjectModel;
 
 namespace Compiler.ViewModels
